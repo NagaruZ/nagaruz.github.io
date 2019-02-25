@@ -96,20 +96,33 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="ngrz">
-<meta property="og:url" content="http://ngrz.me/index.html">
+  <meta name="description" content="前些日子捣鼓了一下Docker，把自己服务器上运行的服务都用Docker来承载了。以前用过Let’s Encrypt的SSL证书，但之前申请证书的certbot工具不是在Docker上跑的。为了在Docker环境下申请证书，我研究了一段时间，找到了adferrand/letsencrypt-dns这个镜像，以让我使用DNS验证的方式申请证书，并且完成证书定期更新的工作。申请成功之后，在Nginx的">
+<meta name="keywords" content="踩坑经验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解决Docker容器中Nginx加载SSL证书时提示&quot;no such file or directory&quot;的问题">
+<meta property="og:url" content="http://ngrz.me/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/index.html">
 <meta property="og:site_name" content="ngrz">
+<meta property="og:description" content="前些日子捣鼓了一下Docker，把自己服务器上运行的服务都用Docker来承载了。以前用过Let’s Encrypt的SSL证书，但之前申请证书的certbot工具不是在Docker上跑的。为了在Docker环境下申请证书，我研究了一段时间，找到了adferrand/letsencrypt-dns这个镜像，以让我使用DNS验证的方式申请证书，并且完成证书定期更新的工作。申请成功之后，在Nginx的">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ngrz.me/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/修改前的nginx的docker-compose配置文件.png">
+<meta property="og:image" content="http://ngrz.me/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/nginx中的域名ssl证书配置.png">
+<meta property="og:image" content="http://ngrz.me/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/nginx错误日志.png">
+<meta property="og:image" content="http://ngrz.me/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/nginx容器里断开的软链接.png">
+<meta property="og:image" content="http://ngrz.me/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/修改后的nginx的docker-compose配置文件.png">
+<meta property="og:image" content="http://ngrz.me/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/nginx容器里正常的软链接.png">
+<meta property="og:image" content="http://ngrz.me/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/OK.png">
+<meta property="og:updated_time" content="2019-02-25T15:34:40.390Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ngrz">
+<meta name="twitter:title" content="解决Docker容器中Nginx加载SSL证书时提示&quot;no such file or directory&quot;的问题">
+<meta name="twitter:description" content="前些日子捣鼓了一下Docker，把自己服务器上运行的服务都用Docker来承载了。以前用过Let’s Encrypt的SSL证书，但之前申请证书的certbot工具不是在Docker上跑的。为了在Docker环境下申请证书，我研究了一段时间，找到了adferrand/letsencrypt-dns这个镜像，以让我使用DNS验证的方式申请证书，并且完成证书定期更新的工作。申请成功之后，在Nginx的">
+<meta name="twitter:image" content="http://ngrz.me/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/修改前的nginx的docker-compose配置文件.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://ngrz.me/">
+  <link rel="canonical" href="http://ngrz.me/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/">
 
 
 
@@ -119,7 +132,7 @@
   };
 </script>
 
-  <title>ngrz</title>
+  <title>解决Docker容器中Nginx加载SSL证书时提示"no such file or directory"的问题 | ngrz</title>
   
 
 
@@ -167,8 +180,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -210,7 +222,7 @@
         
         
           
-          <li class="menu-item menu-item-home menu-item-active">
+          <li class="menu-item menu-item-home">
 
     
     
@@ -272,9 +284,9 @@
           
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -306,10 +318,8 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/" class="post-title-link" itemprop="url">解决Docker容器中Nginx加载SSL证书时提示"no such file or directory"的问题</a>
+          <h1 class="post-title" itemprop="name headline">解决Docker容器中Nginx加载SSL证书时提示"no such file or directory"的问题
+
               
             
           </h1>
@@ -373,12 +383,8 @@
       
 
       
-        
-          
-            <p>前些日子捣鼓了一下Docker，把自己服务器上运行的服务都用Docker来承载了。以前用过Let’s Encrypt的SSL证书，但之前申请证书的certbot工具不是在Docker上跑的。为了在Docker环境下申请证书，我研究了一段时间，找到了<a href="https://hub.docker.com/r/adferrand/letsencrypt-dns" target="_blank" rel="noopener">adferrand/letsencrypt-dns</a>这个镜像，以让我使用DNS验证的方式申请证书，并且完成证书定期更新的工作。<br>申请成功之后，在Nginx的docker-compose配置文件中，把证书文件所在的目录挂载到容器里：<br><img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/修改前的nginx的docker-compose配置文件.png" class="修改前的Nginx的docker-compose配置文件"><br>在Nginx的域名配置文件里把SSL证书添加进去：<br><img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/nginx中的域名ssl证书配置.png" class="Nginx中的域名SSL证书配置"><br>运行Nginx容器后，却报错，提示找不到证书文件，”no such file or directory”：<br><img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/nginx错误日志.png" class="Nginx错误日志"><br>最初认为是权限问题。因为我以普通用户的身份，不能进入证书所在的目录，于是猜测是否有可能是Docker在挂载目录的时候也因为权限问题，导致另一个容器无法访问之。参照<a href="https://hub.docker.com/r/adferrand/letsencrypt-dns#certificates-files-permissions" target="_blank" rel="noopener">这里</a>在配置文件中设置了文件和文件夹权限，设置后我以普通用户的身份可以访问了，但Nginx仍然报错。（这里有个插曲：我起初按照上述链接所述的，令CERTS_USER_OWNER和CERTS_GROUP_OWNER为我建立的用户和对应的组”docker”，但在主机里发现文件权限并没有变，进入letsenrypt-dns容器后手动执行命令提示”chown: unknown user/group”. 后来在镜像的GitHub Issue页看到了作者对这个问题的回答：<a href="https://github.com/adferrand/docker-letsencrypt-dns/issues/40" target="_blank" rel="noopener">User and group owner variables are being ignored?</a>，他提到这种情况下需要使用主机里的UID和GID填入配置文件里的CERTS_USER_OWNER和CERTS_GROUP_OWNER.）<br>后来查到StackOverflow上的这个问题：<a href="https://stackoverflow.com/questions/51853316/nginx-ssl-no-such-file-or-directory-with-docker" target="_blank" rel="noopener">nginx-ssl-no-such-file-or-directory-with-docker</a>。有个答主提到，letsencrypt/live目录中的证书，是指向letsencrypt/archive目录中的文件的软链接。我遇到的问题，可能是Nginx的docker-compose配置文件中的挂载目录设置不当，软链接失效导致的。<br>进入容器中查看，发现确实如此：<img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/nginx容器里断开的软链接.png" class="nginx容器里断开的软链接"><br>将Nginx的docker-compose配置文件中的挂载目录修改成下面的样子：<br><img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/修改后的nginx的docker-compose配置文件.png" class="修改后的Nginx的docker-compose配置文件"><br>再次进入容器，查看软链接的情况，现在是正常的了：<br><img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/nginx容器里正常的软链接.png" class="nginx容器里正常的软链接"><br>现在再访问网站，证书已经成功加载了：<br><img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/OK.png" class="OK"><br>问题解决！</p>
+        <p>前些日子捣鼓了一下Docker，把自己服务器上运行的服务都用Docker来承载了。以前用过Let’s Encrypt的SSL证书，但之前申请证书的certbot工具不是在Docker上跑的。为了在Docker环境下申请证书，我研究了一段时间，找到了<a href="https://hub.docker.com/r/adferrand/letsencrypt-dns" target="_blank" rel="noopener">adferrand/letsencrypt-dns</a>这个镜像，以让我使用DNS验证的方式申请证书，并且完成证书定期更新的工作。<br>申请成功之后，在Nginx的docker-compose配置文件中，把证书文件所在的目录挂载到容器里：<br><img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/修改前的nginx的docker-compose配置文件.png" class="修改前的Nginx的docker-compose配置文件"><br>在Nginx的域名配置文件里把SSL证书添加进去：<br><img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/nginx中的域名ssl证书配置.png" class="Nginx中的域名SSL证书配置"><br>运行Nginx容器后，却报错，提示找不到证书文件，”no such file or directory”：<br><img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/nginx错误日志.png" class="Nginx错误日志"><br>最初认为是权限问题。因为我以普通用户的身份，不能进入证书所在的目录，于是猜测是否有可能是Docker在挂载目录的时候也因为权限问题，导致另一个容器无法访问之。参照<a href="https://hub.docker.com/r/adferrand/letsencrypt-dns#certificates-files-permissions" target="_blank" rel="noopener">这里</a>在配置文件中设置了文件和文件夹权限，设置后我以普通用户的身份可以访问了，但Nginx仍然报错。（这里有个插曲：我起初按照上述链接所述的，令CERTS_USER_OWNER和CERTS_GROUP_OWNER为我建立的用户和对应的组”docker”，但在主机里发现文件权限并没有变，进入letsenrypt-dns容器后手动执行命令提示”chown: unknown user/group”. 后来在镜像的GitHub Issue页看到了作者对这个问题的回答：<a href="https://github.com/adferrand/docker-letsencrypt-dns/issues/40" target="_blank" rel="noopener">User and group owner variables are being ignored?</a>，他提到这种情况下需要使用主机里的UID和GID填入配置文件里的CERTS_USER_OWNER和CERTS_GROUP_OWNER.）<br>后来查到StackOverflow上的这个问题：<a href="https://stackoverflow.com/questions/51853316/nginx-ssl-no-such-file-or-directory-with-docker" target="_blank" rel="noopener">nginx-ssl-no-such-file-or-directory-with-docker</a>。有个答主提到，letsencrypt/live目录中的证书，是指向letsencrypt/archive目录中的文件的软链接。我遇到的问题，可能是Nginx的docker-compose配置文件中的挂载目录设置不当，软链接失效导致的。<br>进入容器中查看，发现确实如此：<img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/nginx容器里断开的软链接.png" class="nginx容器里断开的软链接"><br>将Nginx的docker-compose配置文件中的挂载目录修改成下面的样子：<br><img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/修改后的nginx的docker-compose配置文件.png" class="修改后的Nginx的docker-compose配置文件"><br>再次进入容器，查看软链接的情况，现在是正常的了：<br><img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/nginx容器里正常的软链接.png" class="nginx容器里正常的软链接"><br>现在再访问网站，证书已经成功加载了：<br><img src="/2019/02/25/nginx-docker-ssl-no-such-file-or-directory/OK.png" class="OK"><br>问题解决！</p>
 
-          
-        
       
     </div>
 
@@ -399,157 +405,36 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://ngrz.me/2019/02/21/ngrz-NagaruZ/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NagaruZ">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ngrz">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/02/21/ngrz-NagaruZ/" class="post-title-link" itemprop="url">ngrz, NagaruZ.</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-02-21 20:19:32 / Modified: 22:18:23" itemprop="dateCreated datePublished" datetime="2019-02-21T20:19:32+08:00">2019-02-21</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
+        <div class="post-tags">
           
-
+            <a href="/tags/踩坑经验/" rel="tag"># 踩坑经验</a>
           
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>The very first post.  ‘ngrz’ stands for my GitHub account, <a href="https://github.com/NagaruZ" target="_blank" rel="noopener">NagaruZ</a>.<br>This blog is also available in <a href="https://nagaruz.github.io" target="_blank" rel="noopener">https://nagaruz.github.io</a>.</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/21/ngrz-NagaruZ/" rel="next" title="ngrz, NagaruZ.">
+                <i class="fa fa-chevron-left"></i> ngrz, NagaruZ.
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
       
     </footer>
   </div>
@@ -559,14 +444,15 @@
   </article>
 
 
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -772,6 +658,10 @@
 
 
   
+  <script src="/js/src/scrollspy.js?v=7.0.0"></script>
+<script src="/js/src/post-details.js?v=7.0.0"></script>
+
+
 
   
 
@@ -782,6 +672,8 @@
 
   
 
+
+  
 
 
   
